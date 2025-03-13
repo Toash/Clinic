@@ -22,6 +22,7 @@ const SignInPage = () => {
   const [status, setStatus] = useState('');
   const [errors, setErrors] = useState('');
 
+  const [userType, setUserType] = useState("patient");
   const login = async () => {
     const res = await fetch(API_URL + '/auth/authenticate', {
       method: 'POST',
@@ -36,6 +37,8 @@ const SignInPage = () => {
     })
 
     if (res.status == 200) {
+      localStorage.setItem('userType', userType);
+
       navigate('/', { replace: true });
     } else if (res.status == 202) {
       setErrors("Incorrect username/password. Please verify your login credentials and try again.");
@@ -44,8 +47,10 @@ const SignInPage = () => {
     }
   }
 
-  const [userType, setUserType] = useState("patient");
-
+  const handleUserTypeChange = (event, newValue) => {
+    setUserType(newValue);
+    setErrors("");
+  };
   return (
     <Container maxWidth="xs">
       <Stack
@@ -73,13 +78,13 @@ const SignInPage = () => {
 
           <Tabs
             value={userType}
-            // onChange={handleUserTypeChange}
+            onChange={handleUserTypeChange}
             variant="fullWidth"
             sx={{ width: '100%', mb: 3 }}
           >
             <Tab label="Patient" value="patient" />
             <Tab label="Doctor" value="doctor" />
-            <Tab label="Pharmacist" value="pharmacist" />
+            {/* <Tab label="Pharmacist" value="pharmacist" /> */}
           </Tabs>
 
           <Stack spacing={2} sx={{ width: '100%', mt: 2 }}>

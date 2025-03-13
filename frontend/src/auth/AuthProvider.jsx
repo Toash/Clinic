@@ -19,8 +19,24 @@ export default function Auth({ children, notRequired }) {
         credentials: 'include'
       })
 
+
       if (res.status == 200) {
-        setUser(await res.json());
+        const user = await res.json();
+
+        const userType = localStorage.getItem('userType');
+        if (userType === 'patient') {
+          console.log("getting patient",user.id);
+          const res = await fetch(API_URL + '/patient/' + user.id, {
+            credentials: 'include'
+          })
+          setUser(await res.json());
+        } else if (userType === 'doctor') {
+          const res = await fetch(API_URL + '/doctor/' + user.id, {
+            credentials: 'include'
+          })
+          setUser(await res.json());
+        }
+
         setLoading(false);
       } else {
         !notRequired && navigate('/signin', { replace: true })

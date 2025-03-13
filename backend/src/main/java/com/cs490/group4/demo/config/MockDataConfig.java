@@ -49,14 +49,6 @@ public class MockDataConfig {
                     2L
                 );
 
-                createMockDoctor(
-                    "peach@clinic.com",
-                    "Peach",
-                    "Toadstool",
-                    "1234567892",
-                    "Dietitian",
-                    3L
-                );
 
                 createMockDoctor(
                     "yoshi@clinic.com",
@@ -64,17 +56,9 @@ public class MockDataConfig {
                     "Muschakoopas",
                     "1234567893",
                     "Weight Loss",
-                    4L
+                    3L
                 );
 
-                createMockDoctor(
-                    "toad@clinic.com",
-                    "Toad",
-                    "Toadstool",
-                    "1234567894",
-                    "Dietitian",
-                    5L
-                );
 
                 createMockPatient(
                     "patient@clinic.com",
@@ -84,14 +68,6 @@ public class MockDataConfig {
                     "somewhere"
                 );
                 
-            }
-            if(userRepository.count() == 0) {
-                createMockUser(
-                    "test@clinic.com",
-                    "Password123!",
-                    "Test",
-                    "User"
-                );
             }
         };
     }
@@ -104,6 +80,7 @@ public class MockDataConfig {
             String specialty,
             Long licenseNumber
     ) {
+        User user = createMockUser(email, "Password123!", firstName, lastName);
         Doctor doctor = new Doctor();
         doctor.setFirstName(firstName);
         doctor.setLastName(lastName);
@@ -111,9 +88,9 @@ public class MockDataConfig {
         doctor.setPhone(phone);
         doctor.setSpecialty(specialty);
         doctor.setLicenseNumber(licenseNumber);
-        doctorRepository.save(doctor);
 
-        createMockUser(email, "Password123!", firstName, lastName);
+        doctor.setUser(user);
+        doctorRepository.save(doctor);
     }
 
     private void createMockPatient(
@@ -123,18 +100,19 @@ public class MockDataConfig {
         String phone,
         String address
     ) {
+        User user = createMockUser(email, "Password123!", firstName, lastName);
         Patient patient = new Patient();
         patient.setEmail(email);
         patient.setFirstName(firstName);
         patient.setLastName(lastName);
         patient.setPhone(phone);
         patient.setAddress(address);
+        
+        patient.setUser(user);
         patientRepository.save(patient);
-
-        createMockUser(email, "Password123!", firstName, lastName);
     }
 
-    private void createMockUser(
+    private User createMockUser(
         String email,
         String password,
         String firstName,
@@ -147,5 +125,6 @@ public class MockDataConfig {
         user.setLastName(lastName);
         user.setRole(Role.USER);
         userRepository.save(user);
+        return user;
     }
 } 
